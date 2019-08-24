@@ -26,17 +26,17 @@ func init() {
 		"serve as FCGI via UNIX socket, example: /tmp/myprogram.sock")
 }
 
-func homeView(w http.ResponseWriter, r *http.Request) {
+func hello(w http.ResponseWriter, r *http.Request) {
 	headers := w.Header()
-	headers.Add("Content-Type", "text/html")
-	io.WriteString(w, "<html><head></head><body><p>It works!</p></body></html>")
+	headers.Set("Content-Type", "text/html")
+	io.WriteString(w, "<html><head></head><body><p>Hello</p></body></html>")
 }
 
 func main() {
 	flag.Parse()
 	r := mux.NewRouter()
 
-	r.HandleFunc("/", homeView)
+	r.HandleFunc("/", hello)
 
 	var err error
 
