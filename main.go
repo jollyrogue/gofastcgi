@@ -23,7 +23,7 @@ func init() {
 	flag.StringVar(&tcp, "tcp", "",
 		"serve as FCGI via TCP, example: 0.0.0.0:8000")
 	flag.StringVar(&unix, "unix", "",
-		"serve as FCGI via UNIX socket, example: /tmp/myprogram.sock")
+		"serve as FCGI via UNIX socket, example: /tmp/program.sock")
 }
 
 func hello(w http.ResponseWriter, r *http.Request) {
