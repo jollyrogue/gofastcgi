@@ -70,3 +70,11 @@ func main() {
 	}
 	log.Println("Shutting down.")
 }
+
+/*
+ * References:
+ *	- http://www.dav-muz.net/blog/2013/09/how-to-use-go-and-fastcgi/
+ *	- https://discussion.dreamhost.com/t/how-to-run-go-language-programs-on-dreamhost-servers-using-fastcgi/64844
+ *	- https://mwholt.blogspot.com/2013/05/writing-go-golang-web-app-with-nginx.html
+ *
+ */
