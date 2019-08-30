@@ -1,0 +1,7 @@
+database:
+    host: localhost
+    user: gofastcgi
+    pass: gofastcgipassword
+    name: gofastcgidb
+
+apikey: 7e9dd26f-03a8-4c4f-8fb1-909a70883764
