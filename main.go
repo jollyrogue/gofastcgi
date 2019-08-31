@@ -2,45 +2,54 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"io"
 	"log"
 	"net"
 	"net/http"
 	"net/http/fcgi"
+	"os"
 	"runtime"
 
 	"github.com/gorilla/mux"
 )
 
+var config string
 var local string
 var tcp string
 var unix string
+var debug bool
 
 func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
+	flag.StringVar(&config, "config", "config.yaml",
+		"Path to the config file. ex: /path/to/config.yaml")
 	flag.StringVar(&local, "local", "",
-		"serve as webserver, example: 0.0.0.0:8000")
+		"Start the webserver, ex: 0.0.0.0:8000")
 	flag.StringVar(&tcp, "tcp", "",
-		"serve as FCGI via TCP, example: 0.0.0.0:8000")
+		"Start a FastCGI TCP network socket, ex: 0.0.0.0:8000")
 	flag.StringVar(&unix, "unix", "",
-		"serve as FCGI via UNIX socket, example: /tmp/program.sock")
-}
-
-func hello(w http.ResponseWriter, r *http.Request) {
-	headers := w.Header()
-	headers.Set("Content-Type", "text/html")
-	io.WriteString(w, "<html><head></head><body><p>Hello</p></body></html>")
+		"Start a FastCGI UNIX socket, ex: /tmp/program.sock")
+	flag.BoolVar(&debug, "debug", false,
+		"Turn on debugging output.")
 }
 
 func main() {
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage: %s\n", os.Args[0])
+		flag.PrintDefaults()
+		os.Exit(0)
+	}
 	flag.Parse()
 	r := mux.NewRouter()
 
 	r.HandleFunc("/", hello)
 
+	// Loading config file.
+
 	var err error
 
-	if local != "" { // Run as a local web server
+	if local != "" { // Run the web server
 		log.Printf("Running builtin webserver at %s...\n", local)
 		err = http.ListenAndServe(local, r)
 	} else if tcp != "" { // Run as FCGI via TCP
@@ -69,6 +78,12 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Println("Shutting down.")
+}
+
+func hello(w http.ResponseWriter, r *http.Request) {
+	headers := w.Header()
+	headers.Set("Content-Type", "text/html")
+	io.WriteString(w, "<html><head></head><body><p>Hello</p></body></html>")
 }
 
 /*
