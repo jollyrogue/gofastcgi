@@ -1,7 +1,13 @@
+apikey: 7e9dd26f-03a8-4c4f-8fb1-909a70883764
 database:
     host: localhost
     user: gofastcgi
     pass: gofastcgipassword
     name: gofastcgidb
 
-apikey: 7e9dd26f-03a8-4c4f-8fb1-909a70883764
+email:
+    server: email.domain.tld
+    port: 465
+    user: emailaccount
+    pass: emailpassword
+    secure: True
