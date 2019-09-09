@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
@@ -12,9 +13,31 @@ import (
 	"runtime"
 
 	"github.com/gorilla/mux"
+	"gopkg.in/yaml.v2"
 )
 
-var config string
+type ConfigTreeDatabase struct {
+	Host string `yaml:"host"`
+	User string `yaml:"user"`
+	Pass string `yaml:"pass"`
+	Name string `yaml:"name"`
+}
+
+type ConfigTreeEmail struct {
+	Server string `yaml:"server"`
+	Port   int    `yaml:"port"`
+	User   string `yaml:"user"`
+	Pass   string `yaml:"pass"`
+	Secure bool   `yaml:"secure"`
+}
+
+type ConfigTreeRoot struct {
+	Key      string `yaml:"apikey"`
+	Database ConfigTreeDatabase
+	Email    ConfigTreeEmail
+}
+
+var configPath string
 var local string
 var tcp string
 var unix string
@@ -22,9 +45,9 @@ var debug bool
 
 func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	flag.StringVar(&config, "config", "config.yaml",
+	flag.StringVar(&configPath, "config", "config.yaml",
 		"Path to the config file. ex: /path/to/config.yaml")
-	flag.StringVar(&local, "local", "",
+	flag.StringVar(&local, "local", "127.0.0.1:8000",
 		"Start the webserver, ex: 0.0.0.0:8000")
 	flag.StringVar(&tcp, "tcp", "",
 		"Start a FastCGI TCP network socket, ex: 0.0.0.0:8000")
@@ -41,13 +64,27 @@ func main() {
 		os.Exit(0)
 	}
 	flag.Parse()
+
+	var err error
+
 	r := mux.NewRouter()
 
 	r.HandleFunc("/", hello)
 
 	// Loading config file.
+	configData, err := ioutil.ReadFile(configPath)
+	if err != nil {
+		log.Fatalf("ERROR: Failure to load config file. %s\n", err)
+	}
 
-	var err error
+	config := ConfigTreeRoot{}
+	if err = yaml.Unmarshal(configData, &config); err != nil {
+		log.Fatalf("ERROR: Failed to convert config data to struct. %s", err)
+	}
+
+	if debug {
+		log.Printf("DEBUG: Config settings: %+v\n", config)
+	}
 
 	if local != "" { // Run the web server
 		log.Printf("Running builtin webserver at %s...\n", local)
