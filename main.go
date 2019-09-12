@@ -120,7 +120,17 @@ func main() {
 func hello(w http.ResponseWriter, r *http.Request) {
 	headers := w.Header()
 	headers.Set("Content-Type", "text/html")
-	io.WriteString(w, "<html><head></head><body><p>Hello</p></body></html>")
+	io.WriteString(w, "<html><head></head><body><p>Hello from Go!</p><table>")
+	io.WriteString(w, fmt.Sprintf("<tr><td>Method</td><td>%s</td></tr>", r.Method))
+	io.WriteString(w, fmt.Sprintf("<tr><td>URL</td><td>%s</td></tr>", r.URL))
+	io.WriteString(w, fmt.Sprintf("<tr><td>URL.Path</td><td>%s</td></tr>", r.URL.Path))
+	io.WriteString(w, fmt.Sprintf("<tr><td>Proto</td><td>%s</td></tr>", r.Proto))
+	io.WriteString(w, fmt.Sprintf("<tr><td>Host</td><td>%s</td></tr>", r.Host))
+	io.WriteString(w, fmt.Sprintf("<tr><td>RemoteAddr</td><td>%s</td></tr>", r.RemoteAddr))
+	io.WriteString(w, fmt.Sprintf("<tr><td>RequestURI</td><td>%s</td></tr>", r.RequestURI))
+	io.WriteString(w, fmt.Sprintf("<tr><td>Header</td><td>%s</td></tr>", r.Header))
+	io.WriteString(w, fmt.Sprintf("<tr><td>Body</td><td>%s</td></tr>", r.Body))
+	io.WriteString(w, "</table></body></html>")
 }
 
 /*
@@ -128,5 +138,6 @@ func hello(w http.ResponseWriter, r *http.Request) {
  *	- http://www.dav-muz.net/blog/2013/09/how-to-use-go-and-fastcgi/
  *	- https://discussion.dreamhost.com/t/how-to-run-go-language-programs-on-dreamhost-servers-using-fastcgi/64844
  *	- https://mwholt.blogspot.com/2013/05/writing-go-golang-web-app-with-nginx.html
+ *  - https://github.com/bsingr/golang-apache-fastcgi/blob/master/examples/vanilla/hello_world.go
  *
  */
