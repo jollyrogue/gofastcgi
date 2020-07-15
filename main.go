@@ -47,7 +47,7 @@ func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	flag.StringVar(&configPath, "config", "config.yaml",
 		"Path to the config file. ex: /path/to/config.yaml")
-	flag.StringVar(&local, "local", "127.0.0.1:8000",
+	flag.StringVar(&local, "local", "",
 		"Start the webserver, ex: 0.0.0.0:8000")
 	flag.StringVar(&tcp, "tcp", "",
 		"Start a FastCGI TCP network socket, ex: 0.0.0.0:8000")
